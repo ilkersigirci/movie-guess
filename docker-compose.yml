@@ -1,0 +1,51 @@
+name: movie-guess
+
+networks:
+  movie-guess-network:
+    name: movie-guess-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
+
+services:
+  movie-guess-dev:
+    image: movie-guess-dev:latest
+    container_name: movie-guess-dev
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: development
+    networks:
+      - movie-guess-network
+    # ports:
+    #   - 8080:8080
+    command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
+    restart: "no"
+    develop:
+      watch:
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: .
+          target: /app
+          # Exclude the project virtual environment
+          ignore:
+            - .venv/
+
+        # Rebuild the image on changes to the `pyproject.toml`
+        - action: rebuild
+          path: ./pyproject.toml
+
+  movie-guess-prod:
+    image: movie-guess-prod:latest
+    container_name: movie-guess-prod
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: production
+    networks:
+      - movie-guess-network
+    # ports:
+    #   - 8080:8080
+    command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
+    restart: "no"
