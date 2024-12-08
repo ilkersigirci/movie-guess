@@ -97,6 +97,10 @@ def fuzzy_search_movies(
         ratio = fuzz.ratio(query.lower(), title.lower())
 
         if ratio >= threshold:
+            # Get first backdrop or None
+            backdrops = get_movie_backdrops(result.id)
+            backdrop_path = backdrops[0] if backdrops else None
+
             fuzzy_matches.append(
                 {
                     "title": title,
@@ -104,6 +108,7 @@ def fuzzy_search_movies(
                     "id": result.id,
                     "release_date": getattr(result, "release_date", "N/A"),
                     "overview": getattr(result, "overview", "N/A"),
+                    "backdrop_path": backdrop_path,
                 }
             )
 
