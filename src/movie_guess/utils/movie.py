@@ -119,3 +119,21 @@ def fuzzy_search_movies(
     sorted_matches = sorted(fuzzy_matches, key=lambda x: x["similarity"], reverse=True)
 
     return sorted_matches[:limit]
+
+
+def get_random_movie_with_details() -> dict:
+    """Get a random movie with all its details including backdrops.
+
+    Returns:
+        A dictionary containing movie details including title, backdrops, etc.
+    """
+    movie = get_random_movie()
+    backdrops = get_movie_backdrops(movie.id)
+
+    return {
+        "id": movie.id,
+        "title": movie.title,
+        "backdrops": backdrops,
+        "overview": getattr(movie, "overview", "N/A"),
+        "release_date": getattr(movie, "release_date", "N/A"),
+    }

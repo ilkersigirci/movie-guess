@@ -1,7 +1,6 @@
-I want to create a movie name
- guess app with following steps
+I want to create a movie name guess app with following steps
 
-- Use Python streamlit package
+- Use Python fasthtml package
 - Get the movie backdrops from tmdb randomly
 - Show each backdrop with card component
 - Create a text input for the user to type in movie name

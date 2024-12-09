@@ -200,4 +200,4 @@ run-streamlit: ## Run streamlit app
 	uv run streamlit run src/movie_guess/streamlit_app.py
 
 run-fasthtml: ## Run fasthtml app
-	uv run streamlit run src/movie_guess/fasthtml_app.py
+	uv run python src/movie_guess/fasthtml_app.py
