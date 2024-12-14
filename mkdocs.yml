@@ -1,9 +1,7 @@
 site_name: movie-guess
 site_dir: public
 site_url: https://github.com/ilkersigirci/movie-guess
-# repo_url: https://gitlab.com/ilkersigirci/movie-guess # # For GitLab
 repo_url: https://ilkersigirci.github.io/movie-guess/ # For GitHub
-# repo_name: GitLab
 repo_name: GitHub
 
 theme:
