@@ -1,11 +1,21 @@
-from fasthtml.common import *
+from fasthtml.common import (
+    H2,
+    Card,
+    Container,
+    Div,
+    Form,
+    Img,
+    Input,
+    P,
+    Style,
+    Titled,
+    fast_app,
+    serve,
+)
 
 from movie_guess.utils.movie import fuzzy_search_movies
 
 app, rt = fast_app()
-
-# Fallback image URL when no backdrop is found
-FALLBACK_IMAGE_URL = "https://placehold.co/500x281/808080/FFFFFF/png?text=No+Image"
 
 
 @rt("/")
@@ -63,14 +73,10 @@ def post(query: str = ""):
 
     movie_items = []
     for movie in results:
-        backdrop_img = ""
-        if movie["backdrop_path"]:
-            img_url = f"https://image.tmdb.org/t/p/w500{movie['backdrop_path']}"
-        else:
-            img_url = FALLBACK_IMAGE_URL
-
         backdrop_img = Img(
-            src=img_url, cls="movie-backdrop", alt=f"{movie['title']} backdrop"
+            src=movie["backdrop_image_url"],
+            cls="movie-backdrop",
+            alt=f"{movie['title']} backdrop",
         )
 
         movie_items.append(

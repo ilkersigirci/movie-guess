@@ -10,6 +10,11 @@ tmdb = TMDb()
 movie_api = Movie()
 search_api = Search()
 
+TMDB_IMG_BASE_PATH = "https://image.tmdb.org/t/p/w500"
+
+# Fallback image URL when no backdrop is found
+FALLBACK_IMAGE_URL = "https://placehold.co/500x281/808080/FFFFFF/png?text=No+Image"
+
 
 def get_random_movie() -> Movie:
     """Get a random movie from TMDB popular movies.
@@ -99,7 +104,12 @@ def fuzzy_search_movies(
         if ratio >= threshold:
             # Get first backdrop or None
             backdrops = get_movie_backdrops(result.id)
-            backdrop_path = backdrops[0] if backdrops else None
+
+            backdrop_image_url = (
+                f"{TMDB_IMG_BASE_PATH}{backdrops[0]}"
+                if backdrops
+                else FALLBACK_IMAGE_URL
+            )
 
             fuzzy_matches.append(
                 {
@@ -108,7 +118,7 @@ def fuzzy_search_movies(
                     "id": result.id,
                     "release_date": getattr(result, "release_date", "N/A"),
                     "overview": getattr(result, "overview", "N/A"),
-                    "backdrop_path": backdrop_path,
+                    "backdrop_image_url": backdrop_image_url,
                 }
             )
 
