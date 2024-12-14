@@ -197,7 +197,7 @@ docker-build: ## Build docker image
 	docker build --tag ${DOCKER_IMAGE} --file docker/Dockerfile --target ${DOCKER_TARGET} .
 
 export-requirements: ## Export requirements to requirements.txt
-	@uv export --frozen --no-hashes --only-group dev --format requirements-txt --output-file requirements.txt
+	@uv export --frozen --no-hashes --no-group dev --no-group doc --no-group test --format requirements-txt --output-file requirements.txt
 
 run-fasthtml: ## Run fasthtml app
 	uv run python src/movie_guess/api/fasthtml_app.py

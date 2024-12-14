@@ -638,6 +638,7 @@ source = { editable = "." }
 dependencies = [
     { name = "python-fasthtml" },
     { name = "thefuzz" },
+    { name = "tinyredis" },
     { name = "tmdbv3api" },
 ]
 
@@ -664,6 +665,7 @@ test = [
 requires-dist = [
     { name = "python-fasthtml", specifier = ">=0.10.1" },
     { name = "thefuzz", extras = ["speedup"], specifier = ">=0.22.1" },
+    { name = "tinyredis", specifier = ">=0.0.2" },
     { name = "tmdbv3api", specifier = ">=1.9.0" },
 ]
 
@@ -1089,6 +1091,15 @@ wheels = [
 ]
 
 [[package]]
+name = "redis"
+version = "5.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/da/d283a37303a995cd36f8b92db85135153dc4f7a8e4441aa827721b442cfb/redis-5.2.1.tar.gz", hash = "sha256:16f2e22dff21d5125e8481515e386711a34cbec50f0e44413dd7d9c060a54e0f", size = 4608355 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/5f/fa26b9b2672cbe30e07d9a5bdf39cf16e3b80b42916757c5f92bca88e4ba/redis-5.2.1-py3-none-any.whl", hash = "sha256:ee7e1056b9aea0f04c6c2ed59452947f34c4940ee025f5dd83e6a6418b6989e4", size = 261502 },
+]
+
+[[package]]
 name = "regex"
 version = "2024.11.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1226,6 +1237,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/81/4b/d3eb25831590d6d7d38c2f2e3561d3ba41d490dc89cd91d9e65e7c812508/thefuzz-0.22.1.tar.gz", hash = "sha256:7138039a7ecf540da323792d8592ef9902b1d79eb78c147d4f20664de79f3680", size = 19993 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/82/4f/1695e70ceb3604f19eda9908e289c687ea81c4fecef4d90a9d1d0f2f7ae9/thefuzz-0.22.1-py3-none-any.whl", hash = "sha256:59729b33556850b90e1093c4cf9e618af6f2e4c985df193fdf3c5b5cf02ca481", size = 8245 },
+]
+
+[[package]]
+name = "tinyredis"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fastcore" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d2/d8/bc664b459aa8b1df75c00c91733bb7c5e1b49f6b6dc4b309035febd30039/tinyredis-0.0.2.tar.gz", hash = "sha256:c4e2ac545e8a8b4302d02daca7283e2d1f9a645e957d94272d4c9418366f8e97", size = 7185 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/40/44/91fadb81c2bf5ddf63bcd05f07b3e2b9abe46667cd906460d6aa6c869071/tinyredis-0.0.2-py3-none-any.whl", hash = "sha256:1a16a7eaea28c615e4313503d345175ec5174b222aa2123b4db876a45f2cfd16", size = 10315 },
 ]
 
 [[package]]
