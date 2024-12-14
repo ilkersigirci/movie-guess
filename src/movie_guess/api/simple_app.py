@@ -34,7 +34,7 @@ class Todo:
     priority: int = 0
 
 
-todos = TinyRedis(redis.from_url(os.environ["VERCEL_KV_URL"]), Todo)
+todos = TinyRedis(redis.from_url(os.environ["VERCEL_KV_REDIS_URL"]), Todo)
 
 
 def tid(id):
