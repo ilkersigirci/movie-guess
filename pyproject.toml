@@ -34,7 +34,6 @@ classifiers = [
 
 dependencies = [
     "python-fasthtml>=0.10.1",
-    "ruff==0.8.0",
     "thefuzz[speedup]>=0.22.1",
     "tmdbv3api>=1.9.0",
 ]
@@ -197,7 +196,7 @@ dev = [
     "ipykernel>=6.29.5",
     "mypy>=1.13.0",
     "pre-commit>=4.0.1",
-    "ruff>=0.8.0",
+    "ruff==0.8.0",
     # "scalene~=1.5.21.2",
 ]
 doc = [

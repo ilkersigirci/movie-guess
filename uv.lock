@@ -637,7 +637,6 @@ version = "0.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "python-fasthtml" },
-    { name = "ruff" },
     { name = "thefuzz" },
     { name = "tmdbv3api" },
 ]
@@ -664,7 +663,6 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "python-fasthtml", specifier = ">=0.10.1" },
-    { name = "ruff", specifier = "==0.8.0" },
     { name = "thefuzz", extras = ["speedup"], specifier = ">=0.22.1" },
     { name = "tmdbv3api", specifier = ">=1.9.0" },
 ]
@@ -674,7 +672,7 @@ dev = [
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "mypy", specifier = ">=1.13.0" },
     { name = "pre-commit", specifier = ">=4.0.1" },
-    { name = "ruff", specifier = ">=0.8.0" },
+    { name = "ruff", specifier = "==0.8.0" },
 ]
 doc = [
     { name = "mkdocs", specifier = ">=1.6.1" },
