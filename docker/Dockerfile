@@ -1,5 +1,5 @@
 ARG DEV_IMAGE=ghcr.io/astral-sh/uv:bookworm-slim
-ARG PROD_IMAGE=ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+ARG PROD_IMAGE=ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 ARG UID=1000
 ARG GID=1000
 

@@ -1,10 +1,10 @@
 [project]
 name = "movie_guess"
-version = "0.0.0"
+version = "0.0.1"
 description = "Guess the movie from its posters and banners"
 
 # NOTE: Overwrites .python-version
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.12,<3.13"
 
 authors = [
     {name = "İlker SIĞIRCI", email = "sigirci.ilker@gmail.com"},
@@ -29,7 +29,6 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: Unix",
     "Operating System :: MacOS",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
 
