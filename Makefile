@@ -196,5 +196,8 @@ profile-builtin: ## Profile the file with cProfile and shows the report in the t
 docker-build: ## Build docker image
 	docker build --tag ${DOCKER_IMAGE} --file docker/Dockerfile --target ${DOCKER_TARGET} .
 
+export-requirements: ## Export requirements to requirements.txt
+	uv export --format requirements-txt > requirements.txt
+
 run-fasthtml: ## Run fasthtml app
 	uv run python src/movie_guess/fasthtml_app.py
