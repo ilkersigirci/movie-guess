@@ -35,7 +35,6 @@ classifiers = [
 
 dependencies = [
     "python-fasthtml>=0.10.1",
-    "streamlit>=1.40.2",
     "thefuzz[speedup]>=0.22.1",
     "tmdbv3api>=1.9.0",
 ]
