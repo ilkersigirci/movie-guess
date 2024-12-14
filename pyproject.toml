@@ -34,6 +34,7 @@ classifiers = [
 
 dependencies = [
     "python-fasthtml>=0.10.1",
+    "ruff==0.8.0",
     "thefuzz[speedup]>=0.22.1",
     "tmdbv3api>=1.9.0",
 ]
@@ -66,7 +67,7 @@ log_cli_format = "%(asctime)-20s :: %(name)-8s :: %(levelname)-8s :: %(filename)
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.ruff]
-target-version = "py311"
+# target-version = "py312"
 line-length = 88
 src = ["src"]
 respect-gitignore = true
@@ -77,11 +78,6 @@ extend-exclude = [
     "docs",
     "tests",
 ]
-
-# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E402", "F401"]
-# "*.ipynb" = ["E501"]  # disable line-too-long in notebooks
 
 # "path/to/file.py" = ["E402"]
 # 'movie_guess/__init__.py' = ['F405', 'F403']
@@ -97,7 +93,6 @@ skip-magic-trailing-comma = false
 # preview = true
 
 [tool.ruff.lint]
-
 select = [
     "B",  # flake8-bugbear
     "C",  # flake8-comprehensions
@@ -123,6 +118,7 @@ select = [
 ignore = [
     "E501",  # Line too long, handled by ruff formatter
     "D107", # "Missing docstring in __init__",
+    "F811", # "redefinition of the same function"
 ]
 
 unfixable = [
@@ -130,6 +126,12 @@ unfixable = [
 ]
 
 #extend-select = []
+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+# "*.ipynb" = ["E501"]  # disable line-too-long in notebooks
+"src/movie_guess/api/*" = ["D"]
 
 [tool.ruff.lint.flake8-import-conventions.extend-aliases]
 some_alias = ""

@@ -200,4 +200,4 @@ export-requirements: ## Export requirements to requirements.txt
 	@uv export --frozen --no-hashes --only-group dev --format requirements-txt --output-file requirements.txt
 
 run-fasthtml: ## Run fasthtml app
-	uv run python src/movie_guess/fasthtml_app.py
+	uv run python src/movie_guess/api/fasthtml_app.py

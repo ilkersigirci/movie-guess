@@ -162,42 +162,40 @@ def post(query: str = ""):
                 Button("Play Again", hx_post="/new-game", hx_target="body"),
             )
         )
-    else:
-        # Show next backdrop if wrong guess
-        if (
-            len(current_game["movie"]["backdrops"])
-            > current_game["current_backdrop_index"] + 1
-        ):
-            # Increment the index and get the next backdrop
-            current_game["current_backdrop_index"] += 1
-            next_backdrop = current_game["movie"]["backdrops"][
-                current_game["current_backdrop_index"]
-            ]
-            # Replace the current backdrop with the new one
-            current_game["shown_backdrops"] = [next_backdrop]
-            backdrop_url = f"https://image.tmdb.org/t/p/w1280{next_backdrop}"
-            return (
-                Div(
-                    P(f"Wrong guess: {movie['title']}", cls="wrong-guess"),
-                    id="search-results",
-                ),
-                # Add id to match the container we want to replace
-                Div(
-                    Img(src=backdrop_url, cls="backdrop-img"),
-                    cls="backdrop-container",
-                    id="backdrop-container",
-                    hx_swap_oob="true",
-                ),
-            )
-        else:
-            return Card(
-                Div(
-                    H2("Game Over!", cls="wrong-guess"),
-                    P(f"The correct movie was: {current_movie['title']}"),
-                    P(current_movie["overview"]),
-                    Button("Play Again", hx_post="/new-game", hx_target="body"),
-                )
-            )
+    # Show next backdrop if wrong guess
+    if (
+        len(current_game["movie"]["backdrops"])
+        > current_game["current_backdrop_index"] + 1
+    ):
+        # Increment the index and get the next backdrop
+        current_game["current_backdrop_index"] += 1
+        next_backdrop = current_game["movie"]["backdrops"][
+            current_game["current_backdrop_index"]
+        ]
+        # Replace the current backdrop with the new one
+        current_game["shown_backdrops"] = [next_backdrop]
+        backdrop_url = f"https://image.tmdb.org/t/p/w1280{next_backdrop}"
+        return (
+            Div(
+                P(f"Wrong guess: {movie['title']}", cls="wrong-guess"),
+                id="search-results",
+            ),
+            # Add id to match the container we want to replace
+            Div(
+                Img(src=backdrop_url, cls="backdrop-img"),
+                cls="backdrop-container",
+                id="backdrop-container",
+                hx_swap_oob="true",
+            ),
+        )
+    return Card(
+        Div(
+            H2("Game Over!", cls="wrong-guess"),
+            P(f"The correct movie was: {current_movie['title']}"),
+            P(current_movie["overview"]),
+            Button("Play Again", hx_post="/new-game", hx_target="body"),
+        )
+    )
 
 
 @rt("/new-game")

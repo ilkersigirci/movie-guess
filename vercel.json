@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/src/movie_guess/game_app"
+      "destination": "/src/movie_guess/api/game_app"
     }
   ]
 }
