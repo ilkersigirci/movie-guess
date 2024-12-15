@@ -10,7 +10,6 @@ from fasthtml.common import (
     Style,
     Titled,
     fast_app,
-    serve,
 )
 
 from api.utils.movie import fuzzy_search_movies
