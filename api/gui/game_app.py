@@ -61,6 +61,22 @@ def get():
             .search-item:hover {
                 background-color: #f0f0f0;
             }
+            .guess-counter {
+                text-align: center;
+                margin: 1rem 0;
+                font-size: 1.2rem;
+            }
+            .guess-indicator {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                margin: 0 5px;
+                border-radius: 50%;
+                background-color: #ddd;
+            }
+            .guess-used {
+                background-color: #666;
+            }
         """),
         Div(
             Input(
@@ -91,6 +107,7 @@ def get():
                 "movie": movie,
                 "current_backdrop_index": 0,
                 "shown_backdrops": [current_backdrop] if current_backdrop else [],
+                "guesses_remaining": 5,  # Add guess counter
             }
         )
 
@@ -105,11 +122,31 @@ def get():
             id="backdrop-container",  # Add this ID
         )
 
+    # Add guess counter display
+    guess_indicators = Div(
+        P(
+            f"Guesses remaining: {current_game.get('guesses_remaining', 5)}",
+            style="margin-bottom: 0.5rem;",
+        ),
+        Div(
+            *[
+                Div(
+                    cls=f"guess-indicator {'guess-used' if i >= current_game.get('guesses_remaining', 5) else ''}"
+                )
+                for i in range(5)
+            ],
+            style="text-align: center;",
+        ),
+        cls="guess-counter",
+        id="guess-counter",
+    )
+
     results_div = Div(id="search-results")
 
     # Add top_nav to the Container
     return Titled(
-        "Movie Guess Game", Container(top_nav, backdrop, search_box, results_div)
+        "Movie Guess Game",
+        Container(top_nav, backdrop, guess_indicators, search_box, results_div),
     )
 
 
@@ -152,16 +189,54 @@ def post(query: str = ""):
     movie = results[0]  # Use the best match
     is_correct = movie["id"] == current_movie["id"]
 
+    # Decrease remaining guesses
+    current_game["guesses_remaining"] = current_game.get("guesses_remaining", 5) - 1
+
+    # Update guess counter display
+    updated_counter = Div(
+        P(
+            f"Guesses remaining: {current_game['guesses_remaining']}",
+            style="margin-bottom: 0.5rem;",
+        ),
+        Div(
+            *[
+                Div(
+                    cls=f"guess-indicator {'guess-used' if i >= current_game['guesses_remaining'] else ''}"
+                )
+                for i in range(5)
+            ],
+            style="text-align: center;",
+        ),
+        cls="guess-counter",
+        id="guess-counter",
+        hx_swap_oob="true",
+    )
+
     if is_correct:
+        return (
+            Card(
+                Div(
+                    H2(f"🎉 Correct! It's {movie['title']}", cls="correct-guess"),
+                    P(f"Release Date: {movie['release_date']}"),
+                    P(movie["overview"]),
+                    Button("Play Again", hx_post="/new-game", hx_target="body"),
+                )
+            ),
+            updated_counter,
+        )
+
+    # Check if out of guesses
+    if current_game["guesses_remaining"] <= 0:
         return Card(
             Div(
-                H2(f"🎉 Correct! It's {movie['title']}", cls="correct-guess"),
-                P(f"Release Date: {movie['release_date']}"),
-                P(movie["overview"]),
+                H2("Game Over!", cls="wrong-guess"),
+                P(f"The correct movie was: {current_movie['title']}"),
+                P(current_movie["overview"]),
                 Button("Play Again", hx_post="/new-game", hx_target="body"),
             )
         )
-    # Show next backdrop if wrong guess
+
+    # Show next backdrop if wrong guess and still have guesses
     if (
         len(current_game["movie"]["backdrops"])
         > current_game["current_backdrop_index"] + 1
@@ -186,14 +261,18 @@ def post(query: str = ""):
                 id="backdrop-container",
                 hx_swap_oob="true",
             ),
+            updated_counter,
         )
-    return Card(
-        Div(
-            H2("Game Over!", cls="wrong-guess"),
-            P(f"The correct movie was: {current_movie['title']}"),
-            P(current_movie["overview"]),
-            Button("Play Again", hx_post="/new-game", hx_target="body"),
-        )
+    return (
+        Card(
+            Div(
+                H2("Game Over!", cls="wrong-guess"),
+                P(f"The correct movie was: {current_movie['title']}"),
+                P(current_movie["overview"]),
+                Button("Play Again", hx_post="/new-game", hx_target="body"),
+            )
+        ),
+        updated_counter,
     )
 
 
