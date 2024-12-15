@@ -134,13 +134,13 @@ publish: ## Builds the project and publish the package to Pypi
 	# uv publish --publish-url https://test.pypi.org/legacy/ --username DUMMY --password DUMMY dist/*
 
 doc: ## Build documentation with mkdocs
-	uv run mkdocs build
+	uv run --module mkdocs build
 
 doc-github: ## Build documentation with mkdocs and deploy to github pages
-	uv run mkdocs gh-deploy --force
+	uv run --module mkdocs gh-deploy --force
 
 doc-dev: ## Show documentation preview with mkdocs
-	uv run mkdocs serve -w ${PACKAGE}
+	uv run --module mkdocs serve -w ${PACKAGE}
 
 pre-commit-one: ## Run pre-commit with specific files
 	uv lock --locked
