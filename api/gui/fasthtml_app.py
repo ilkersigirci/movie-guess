@@ -13,7 +13,7 @@ from fasthtml.common import (
     serve,
 )
 
-from movie_guess.utils.movie import fuzzy_search_movies
+from api.utils.movie import fuzzy_search_movies
 
 app, rt = fast_app()
 
@@ -98,5 +98,5 @@ def post(query: str = ""):
     return Div(*movie_items, id="search-results", cls="movie-grid")
 
 
-if __name__ == "__main__":
-    serve()
+# if __name__ == "__main__":
+#     serve()

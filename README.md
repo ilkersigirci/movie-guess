@@ -5,7 +5,6 @@ Guess the movie from its posters and banners
 ## Project Structure
 
 - It uses [uv](https://github.com/astral-sh/uv) for python dependency operations and virtual environment management.
-- It uses `src` layout, which is the recommended layout for python projects to avoid common [pitfalls](https://blog.ionelmc.ro/2014/05/25/python-packaging/#the-structure).
 - It uses `project.toml` instead of `setup.py` and `setup.cfg`. The reasoning is following:
     - As [official setuptools guide](https://github.com/pypa/setuptools/blob/main/docs/userguide/quickstart.rst) says, " configuring new projects via setup.py is discouraged"
     - One of the biggest problems with setuptools is that the use of an executable file (i.e. the setup.py) cannot be executed without knowing its dependencies. And there is really no way to know what these dependencies are unless you actually execute the file that contains the information related to package dependencies.

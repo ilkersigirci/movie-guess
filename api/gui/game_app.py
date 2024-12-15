@@ -11,10 +11,9 @@ from fasthtml.common import (
     Style,
     Titled,
     fast_app,
-    serve,
 )
 
-from movie_guess.utils.movie import fuzzy_search_movies, get_random_movie_with_details
+from api.utils.movie import fuzzy_search_movies, get_random_movie_with_details
 
 app, rt = fast_app()
 
@@ -204,5 +203,5 @@ def post():
     return get()
 
 
-if __name__ == "__main__":
-    serve()
+# if __name__ == "__main__":
+#     serve()

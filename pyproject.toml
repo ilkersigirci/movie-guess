@@ -53,7 +53,7 @@ addopts = [
 #    "--strict-markers",
 #    "--doctest-modules",
     # NOTE: cov is not working with pycharm debugger. Enable it later!
-#    "--cov movie_guess",
+#    "--cov api",
 #    "--cov-report=xml",
 #    "--cov-report html",
 ]
@@ -69,7 +69,7 @@ log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 [tool.ruff]
 # target-version = "py312"
 line-length = 88
-src = ["src"]
+# src = ["api"]
 respect-gitignore = true
 
 # extend-include = []
@@ -80,7 +80,7 @@ extend-exclude = [
 ]
 
 # "path/to/file.py" = ["E402"]
-# 'movie_guess/__init__.py' = ['F405', 'F403']
+# 'api/__init__.py' = ['F405', 'F403']
 
 # [tool.ruff.flake8-quotes]
 # inline-quotes = "single"
@@ -131,7 +131,7 @@ unfixable = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]
 # "*.ipynb" = ["E501"]  # disable line-too-long in notebooks
-"src/movie_guess/api/*" = ["D"]
+"api/*" = ["D"]
 
 [tool.ruff.lint.flake8-import-conventions.extend-aliases]
 some_alias = ""
@@ -152,7 +152,7 @@ combine-as-imports = true
 # Read more here: https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
 [tool.mypy]
 # python_version = "3.8"
-files = ["src/movie_guess"]
+files = ["api"]
 # exclude = ['^tests/']
 strict = true
 show_error_codes = true
@@ -165,7 +165,7 @@ ignore_missing_imports = true
 check_untyped_defs = true
 
 [tool.coverage.run]
-source = ['src/movie_guess']
+source = ['api']
 branch = true
 context = '${CONTEXT}'
 
@@ -181,16 +181,12 @@ exclude_lines = [
 
 # [tool.coverage.paths]
 # source = [
-#     'src/movie_guess/',
+#     'api/',
 # ]
 
 # [build-system]
 # requires = ["uv>=0.5.0,<1.0.0"]
-# build-backend = "uv._build_backend" # FIXME: Only builds source distribution, not wheel
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+# build-backend = "uv" # FIXME: Only builds source distribution, not wheel
 
 [dependency-groups]
 dev = [

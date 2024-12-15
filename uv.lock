@@ -634,7 +634,7 @@ wheels = [
 [[package]]
 name = "movie-guess"
 version = "0.0.1"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "python-fasthtml" },
     { name = "thefuzz" },

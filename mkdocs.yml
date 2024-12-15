@@ -15,7 +15,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [src]
+          paths: [api]
           options:
             # Headings options
             show_root_heading: false

@@ -19,7 +19,6 @@ from fasthtml.common import (
     fast_app,
     fill_form,
     patch,
-    serve,
 )
 from tinyredis import TinyRedis
 
@@ -125,6 +124,3 @@ async def get(id: str):
         hx_swap="outerHTML",
     )
     return Div(Div(todo.title), btn)
-
-
-serve()

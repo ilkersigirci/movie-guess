@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/src/movie_guess/api/simple_app"
+      "destination": "/api/simple_app"
     }
   ]
 }

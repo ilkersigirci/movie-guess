@@ -3,13 +3,13 @@
 .ONESHELL:
 SHELL=/bin/bash
 ROOT_DIR=movie-guess
-PACKAGE=src/movie_guess
+PACKAGE=api
 DOC_DIR=./docs
 TEST_DIR=./tests
 TEST_MARKER=placeholder
 TEST_OUTPUT_DIR=tests_outputs
-PRECOMMIT_FILE_PATHS=./movie_guess/__init__.py
-PROFILE_FILE_PATH=./movie_guess/__init__.py
+PRECOMMIT_FILE_PATHS=./api/__init__.py
+PROFILE_FILE_PATH=./api/__init__.py
 DOCKER_IMAGE=movie-guess
 DOCKER_TARGET=development
 
@@ -200,4 +200,4 @@ export-requirements: ## Export requirements to requirements.txt
 	@uv export --frozen --no-hashes --no-group dev --no-group doc --no-group test --format requirements-txt --output-file requirements.txt
 
 run-fasthtml: ## Run fasthtml app
-	uv run python src/movie_guess/api/fasthtml_app.py
+	uv run uvicorn api.gui.game_app:app --host 0.0.0.0 --port 5001

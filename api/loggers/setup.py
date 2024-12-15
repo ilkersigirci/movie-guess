@@ -3,7 +3,7 @@
 import logging
 import logging.config
 
-from movie_guess.loggers.configs.default import DEFAULT_LOGGER_CONFIG
+from .configs.default import DEFAULT_LOGGER_CONFIG
 
 logger = logging.getLogger(__name__)
 

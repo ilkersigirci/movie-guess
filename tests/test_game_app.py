@@ -1,5 +1,5 @@
 from fasthtml.common import *
-from movie_guess.api.game_app import app
+from api.gui.game_app import app
 import pytest
 
 @pytest.fixture

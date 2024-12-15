@@ -41,7 +41,7 @@ RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     # --mount=type=bind,source=.python-version,target=.python-version \
     # --mount=type=bind,source=README.md,target=README.md \
-    # --mount=type=bind,source=src,target=src \
+    # --mount=type=bind,source=api,target=api \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --no-install-project
 
@@ -65,7 +65,7 @@ RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=.python-version,target=.python-version \
     --mount=type=bind,source=README.md,target=README.md \
-    --mount=type=bind,source=src,target=src \
+    --mount=type=bind,source=api,target=api \
     uv build --wheel --out-dir dist
 
 #

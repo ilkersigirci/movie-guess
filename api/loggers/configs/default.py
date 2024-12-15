@@ -17,20 +17,20 @@ DEFAULT_LOGGER_CONFIG = {
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
         "colored": {
-            "()": "movie_guess.loggers.formatters.ColoredFormatter",
+            "()": "api.loggers.formatters.ColoredFormatter",
             "format": "%(asctime)-20s :: %(name)-8s :: %(levelname)-8s :: %(pathname)s:%(lineno)d :: %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
     "filters": {
         "info": {
-            "()": "movie_guess.loggers.filters.InfoFilter",
+            "()": "api.loggers.filters.InfoFilter",
         },
         "cwd": {
-            "()": "movie_guess.loggers.filters.CwdFilter",
+            "()": "api.loggers.filters.CwdFilter",
         },
         # "path_shortener": {
-        #     "()": "movie_guess.loggers.filters.PathShortenerFilter",
+        #     "()": "api.loggers.filters.PathShortenerFilter",
         # }
     },
     "handlers": {
@@ -44,7 +44,7 @@ DEFAULT_LOGGER_CONFIG = {
         "file_handler": {
             "class": "logging.FileHandler",
             "level": "INFO",
-            "filename": "movie_guess.log",
+            "filename": "api.log",
             "formatter": "base",
             "filters": ["cwd"],
         },
@@ -63,7 +63,7 @@ DEFAULT_LOGGER_CONFIG = {
             "handlers": ["console"],
             "propagate": True,  # Inherit root handlers
         },
-        "movie_guess": {
+        "api": {
             "level": "DEBUG",
             "handlers": ["console"],  # ,file_handler
             "propagate": True,  # Inherit root handlers
