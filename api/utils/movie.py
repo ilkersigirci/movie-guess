@@ -2,6 +2,7 @@
 
 import random
 
+from loguru import logger
 from thefuzz import fuzz
 from tmdbv3api import Movie, Search, TMDb
 
@@ -131,14 +132,26 @@ def fuzzy_search_movies(
     return sorted_matches[:limit]
 
 
-def get_random_movie_with_details() -> dict:
-    """Get a random movie with all its details including backdrops.
+def get_random_movie_with_details(min_backdrops: int = 5) -> dict:
+    """Get a random movie with at least specified number of backdrops.
+
+    The function will keep trying random movies until it finds one with sufficient backdrops.
+
+    Args:
+        min_backdrops: Minimum number of backdrops required (default: 5)
 
     Returns:
         A dictionary containing movie details including title, backdrops, etc.
     """
     movie = get_random_movie()
     backdrops = get_movie_backdrops(movie.id)
+
+    # Recursively try another movie if this one doesn't have enough backdrops
+    if len(backdrops) < min_backdrops:
+        logger.debug(
+            f"Movie {movie.title} has {len(backdrops)} backdrops, trying another..."
+        )
+        return get_random_movie_with_details(min_backdrops)
 
     return {
         "id": movie.id,

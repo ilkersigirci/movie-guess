@@ -33,6 +33,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "loguru>=0.7.3",
     "python-fasthtml>=0.10.1",
     "thefuzz[speedup]>=0.22.1",
     "tinyredis>=0.0.2",
