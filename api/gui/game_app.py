@@ -15,14 +15,11 @@ from fasthtml.common import (
 
 from api.utils.movie import fuzzy_search_movies, get_random_movie_with_details
 
-app, rt = fast_app()
-
-# Store current game state
-current_game = {}
+app, rt = fast_app(secret_key="your-secret-key-here")  # Add secret key for session
 
 
 @rt("/")
-def get():
+def get(session):
     # Add top navigation with new game button
     top_nav = Div(
         Button("New Game", hx_post="/new-game", hx_target="body"),
@@ -97,19 +94,18 @@ def get():
         id="search-form",
     )
 
-    # Initialize new game if not exists
-    if not current_game:
+    # Initialize new game if not exists in session
+    if "game" not in session:
         movie = get_random_movie_with_details()
-        # Start with just the first backdrop
         current_backdrop = movie["backdrops"][0] if movie["backdrops"] else None
-        current_game.update(
-            {
-                "movie": movie,
-                "current_backdrop_index": 0,
-                "shown_backdrops": [current_backdrop] if current_backdrop else [],
-                "guesses_remaining": 5,  # Add guess counter
-            }
-        )
+        session["game"] = {
+            "movie": movie,
+            "current_backdrop_index": 0,
+            "shown_backdrops": [current_backdrop] if current_backdrop else [],
+            "guesses_remaining": 5,
+        }
+
+    current_game = session["game"]  # Get game state from session
 
     backdrop = None
     if current_game["shown_backdrops"]:
@@ -177,7 +173,7 @@ def post(query: str = ""):
 
 
 @rt("/guess")
-def post(query: str = ""):
+def post(query: str = "", session=None):  # Add session parameter
     if not query:
         return Div("Please select a movie to guess", id="search-results")
 
@@ -185,12 +181,14 @@ def post(query: str = ""):
     if not results:
         return Div("No movies found", id="search-results")
 
+    current_game = session["game"]  # Get game state from session
     current_movie = current_game["movie"]
     movie = results[0]  # Use the best match
     is_correct = movie["id"] == current_movie["id"]
 
     # Decrease remaining guesses
     current_game["guesses_remaining"] = current_game.get("guesses_remaining", 5) - 1
+    session["game"] = current_game  # Save updated game state back to session
 
     # Update guess counter display
     updated_counter = Div(
@@ -248,6 +246,7 @@ def post(query: str = ""):
         ]
         # Replace the current backdrop with the new one
         current_game["shown_backdrops"] = [next_backdrop]
+        session["game"] = current_game  # Save updated game state back to session
         backdrop_url = f"https://image.tmdb.org/t/p/w1280{next_backdrop}"
         return (
             Div(
@@ -277,9 +276,10 @@ def post(query: str = ""):
 
 
 @rt("/new-game")
-def post():
-    current_game.clear()
-    return get()
+def post(session):
+    if "game" in session:
+        del session["game"]  # Clear game state from session
+    return get(session)  # Pass session to get()
 
 
 # if __name__ == "__main__":
