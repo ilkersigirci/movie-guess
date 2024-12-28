@@ -16,20 +16,30 @@ TMDB_IMG_BASE_PATH = "https://image.tmdb.org/t/p/w500"
 # Fallback image URL when no backdrop is found
 FALLBACK_IMAGE_URL = "https://placehold.co/500x281/808080/FFFFFF/png?text=No+Image"
 
+# Available movie categories and their methods
+MOVIE_CATEGORIES = {
+    "popular": movie_api.popular,
+    "top_rated": movie_api.top_rated,
+    "now_playing": movie_api.now_playing,
+    "upcoming": movie_api.upcoming,
+}
 
-def get_random_movie() -> Movie:
-    """Get a random movie from TMDB popular movies.
 
-    Examples:
-        >>> movie = get_random_movie()
-        >>> isinstance(movie, Movie)
-        True
+def get_random_movie(category: str = "popular") -> Movie:
+    """Get a random movie from specified TMDB category.
+
+    Args:
+        category: The category to select from (default: "popular")
+                 Options: "popular", "top_rated", "now_playing", "upcoming"
 
     Returns:
-        A Movie object representing a randomly selected popular movie from TMDB.
+        A Movie object representing a randomly selected movie from the specified category.
     """
-    popular = movie_api.popular()
-    return random.choice(popular)
+    # Get the category method or default to popular if invalid
+    category_method = MOVIE_CATEGORIES.get(category, MOVIE_CATEGORIES["popular"])
+    # Get movies from the category
+    movies = category_method()
+    return random.choice(movies)
 
 
 def get_movie_posters(movie_id: int) -> list[str]:
@@ -132,18 +142,20 @@ def fuzzy_search_movies(
     return sorted_matches[:limit]
 
 
-def get_random_movie_with_details(min_backdrops: int = 5) -> dict:
+def get_random_movie_with_details(
+    min_backdrops: int = 5, category: str = "popular"
+) -> dict:
     """Get a random movie with at least specified number of backdrops.
-
-    The function will keep trying random movies until it finds one with sufficient backdrops.
 
     Args:
         min_backdrops: Minimum number of backdrops required (default: 5)
+        category: The category to select from (default: "popular")
+                 Options: "popular", "top_rated", "now_playing", "upcoming"
 
     Returns:
         A dictionary containing movie details including title, backdrops, etc.
     """
-    movie = get_random_movie()
+    movie = get_random_movie(category)
     backdrops = get_movie_backdrops(movie.id)
 
     # Recursively try another movie if this one doesn't have enough backdrops
@@ -151,7 +163,7 @@ def get_random_movie_with_details(min_backdrops: int = 5) -> dict:
         logger.debug(
             f"Movie {movie.title} has {len(backdrops)} backdrops, trying another..."
         )
-        return get_random_movie_with_details(min_backdrops)
+        return get_random_movie_with_details(min_backdrops, category)
 
     return {
         "id": movie.id,

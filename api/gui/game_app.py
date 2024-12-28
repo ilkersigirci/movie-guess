@@ -7,7 +7,9 @@ from fasthtml.common import (
     Form,
     Img,
     Input,
+    Option,
     P,
+    Select,
     Style,
     Titled,
     fast_app,
@@ -20,8 +22,21 @@ app, rt = fast_app(secret_key="your-secret-key-here")  # Add secret key for sess
 
 @rt("/")
 def get(session):
-    # Add top navigation with new game button
+    # Add top navigation with category selector and new game button
     top_nav = Div(
+        Form(
+            Select(
+                Option("Popular Movies", value="popular", selected=True),
+                Option("Top Rated Movies", value="top_rated"),
+                Option("Now Playing", value="now_playing"),
+                Option("Upcoming Movies", value="upcoming"),
+                name="category",
+                hx_post="/new-game",
+                hx_target="body",
+                hx_trigger="change",
+            ),
+            style="display: inline-block; margin-right: 1rem;",
+        ),
         Button("New Game", hx_post="/new-game", hx_target="body"),
         style="text-align: right; margin-bottom: 1rem;",
     )
@@ -276,10 +291,23 @@ def post(query: str = "", session=None):  # Add session parameter
 
 
 @rt("/new-game")
-def post(session):
+def post(category: str = "popular", session=None):
     if "game" in session:
-        del session["game"]  # Clear game state from session
-    return get(session)  # Pass session to get()
+        del session["game"]
+
+    # Get new movie from selected category
+    movie = get_random_movie_with_details(category=category)
+    current_backdrop = movie["backdrops"][0] if movie["backdrops"] else None
+
+    session["game"] = {
+        "movie": movie,
+        "current_backdrop_index": 0,
+        "shown_backdrops": [current_backdrop] if current_backdrop else [],
+        "guesses_remaining": 5,
+        "category": category,  # Store selected category
+    }
+
+    return get(session)
 
 
 # if __name__ == "__main__":
