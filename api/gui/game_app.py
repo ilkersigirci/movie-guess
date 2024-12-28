@@ -54,6 +54,12 @@ def get(session):
                 object-fit: cover;
                 border-radius: 8px;
             }
+            /* Add title styling */
+            h1 {
+                text-align: center;
+                margin: 2rem 0;
+            }
+            /* Rest of existing styles */
             .search-results {
                 margin-top: 1rem;
             }
@@ -89,12 +95,24 @@ def get(session):
             .guess-used {
                 background-color: #666;
             }
+            .search-form {
+                display: flex;
+                gap: 1rem;
+                align-items: center;
+            }
+            .search-form input[type="search"] {
+                flex: 1;
+                margin: 0;
+            }
+            .search-form button {
+                margin: 0;
+            }
         """),
         Div(
             Input(
                 type="search",
                 name="query",
-                placeholder="Search for a movie...",
+                placeholder="Guess the movie...",
                 hx_post="/search",
                 hx_trigger="keyup changed delay:500ms",
                 hx_target="#search-results",
@@ -105,6 +123,7 @@ def get(session):
                 hx_include="#search-form",
                 hx_target="#search-results",
             ),
+            cls="search-form",
         ),
         id="search-form",
     )
