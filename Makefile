@@ -196,8 +196,9 @@ profile-builtin: ## Profile the file with cProfile and shows the report in the t
 docker-build: ## Build docker image
 	docker build --tag ${DOCKER_IMAGE} --file docker/Dockerfile --target ${DOCKER_TARGET} .
 
-export-requirements: ## Export requirements to requirements.txt
-	@uv export --frozen --no-hashes --no-group dev --no-group doc --no-group test --format requirements-txt --output-file requirements.txt
-
 run-fasthtml: ## Run fasthtml app
-	uv run uvicorn api.gui.game_app:app --host 0.0.0.0 --port 5001
+	# uv run --module api/gui/game_app
+	uv run uvicorn api.gui.game_app:app --host 0.0.0.0 --port 5002
+
+run-fasthtml-simple: ## Run simple fasthtml app
+	uv run uvicorn api.gui.simple_app:app --host 0.0.0.0 --port 5002

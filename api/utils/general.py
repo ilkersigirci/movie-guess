@@ -1,10 +1,11 @@
 """General utility functions."""
 
 import importlib
-import logging
 import os
+import time
+from functools import wraps
 
-logger = logging.getLogger(__name__)
+from loguru import logger
 
 
 def check_env_vars(env_vars: list[str] | None = None) -> None:
@@ -54,3 +55,17 @@ def is_module_installed(module_name: str, throw_error: bool = False) -> bool:
             message = f"Module {module_name} is not installed."
             raise ImportError(message) from e
         return False
+
+
+def timing_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        logger.info(
+            f"{func.__name__} took {end_time - start_time:.2f} seconds to execute"
+        )
+        return result
+
+    return wrapper

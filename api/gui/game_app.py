@@ -7,7 +7,9 @@ from fasthtml.common import (
     Form,
     Img,
     Input,
+    Option,
     P,
+    Select,
     Style,
     Titled,
     fast_app,
@@ -15,16 +17,45 @@ from fasthtml.common import (
 
 from api.utils.movie import fuzzy_search_movies, get_random_movie_with_details
 
-app, rt = fast_app()
-
-# Store current game state
-current_game = {}
+app, rt = fast_app(secret_key="your-secret-key-here")  # Add secret key for session
 
 
 @rt("/")
-def get():
-    # Add top navigation with new game button
+def get(session):
+    # Get current category from session, default to 'popular'
+    current_category = session.get("game", {}).get("category", "popular")
+
+    # Add top navigation with category selector and new game button
     top_nav = Div(
+        Form(
+            Select(
+                Option(
+                    "Popular Movies",
+                    value="popular",
+                    selected=current_category == "popular",
+                ),
+                Option(
+                    "Top Rated Movies",
+                    value="top_rated",
+                    selected=current_category == "top_rated",
+                ),
+                Option(
+                    "Now Playing",
+                    value="now_playing",
+                    selected=current_category == "now_playing",
+                ),
+                Option(
+                    "Upcoming Movies",
+                    value="upcoming",
+                    selected=current_category == "upcoming",
+                ),
+                name="category",
+                hx_post="/new-game",
+                hx_target="body",
+                hx_trigger="change",
+            ),
+            style="display: inline-block; margin-right: 1rem;",
+        ),
         Button("New Game", hx_post="/new-game", hx_target="body"),
         style="text-align: right; margin-bottom: 1rem;",
     )
@@ -42,6 +73,12 @@ def get():
                 object-fit: cover;
                 border-radius: 8px;
             }
+            /* Add title styling */
+            h1 {
+                text-align: center;
+                margin: 2rem 0;
+            }
+            /* Rest of existing styles */
             .search-results {
                 margin-top: 1rem;
             }
@@ -77,15 +114,28 @@ def get():
             .guess-used {
                 background-color: #666;
             }
+            .search-form {
+                display: flex;
+                gap: 1rem;
+                align-items: center;
+            }
+            .search-form input[type="search"] {
+                flex: 1;
+                margin: 0;
+            }
+            .search-form button {
+                margin: 0;
+            }
         """),
         Div(
             Input(
                 type="search",
                 name="query",
-                placeholder="Search for a movie...",
+                placeholder="Guess the movie...",
                 hx_post="/search",
-                hx_trigger="keyup changed delay:500ms",
+                hx_trigger="input changed delay:200ms",
                 hx_target="#search-results",
+                autocomplete="off",  # To prevent browser autocomplete from interfering
             ),
             Button(
                 "Submit Guess",
@@ -93,23 +143,23 @@ def get():
                 hx_include="#search-form",
                 hx_target="#search-results",
             ),
+            cls="search-form",
         ),
         id="search-form",
     )
 
-    # Initialize new game if not exists
-    if not current_game:
+    # Initialize new game if not exists in session
+    if "game" not in session:
         movie = get_random_movie_with_details()
-        # Start with just the first backdrop
         current_backdrop = movie["backdrops"][0] if movie["backdrops"] else None
-        current_game.update(
-            {
-                "movie": movie,
-                "current_backdrop_index": 0,
-                "shown_backdrops": [current_backdrop] if current_backdrop else [],
-                "guesses_remaining": 5,  # Add guess counter
-            }
-        )
+        session["game"] = {
+            "movie": movie,
+            "current_backdrop_index": 0,
+            "shown_backdrops": [current_backdrop] if current_backdrop else [],
+            "guesses_remaining": 5,
+        }
+
+    current_game = session["game"]  # Get game state from session
 
     backdrop = None
     if current_game["shown_backdrops"]:
@@ -143,7 +193,8 @@ def get():
 
     results_div = Div(id="search-results")
 
-    # Add top_nav to the Container
+    # Add top_nav to the Container with reordered elements:
+    # Move search_box and results_div together, before the backdrop
     return Titled(
         "Movie Guess Game",
         Container(top_nav, backdrop, guess_indicators, search_box, results_div),
@@ -152,45 +203,48 @@ def get():
 
 @rt("/search")
 def post(query: str = ""):
-    if not query:
+    MIN_CHARS = 2
+
+    if not query or len(query) < MIN_CHARS:
         return Div("Start typing to search for movies...", id="search-results")
 
-    results = fuzzy_search_movies(query)
-
+    results = fuzzy_search_movies(query=query, limit=3, include_backdrops=False)
     if not results:
         return Div("No movies found", id="search-results")
 
-    # Create clickable list items that populate the search input
+    # Create clickable list items that populate the search input and automatically submit
     movie_items = [
         Div(
             f"{movie['title']} ({movie['release_date'][:4]})",
-            # Fixed string escaping by using format() instead of f-string
-            onclick='document.querySelector(\'[name="query"]\').value = "{}";'.format(
-                movie["title"].replace('"', '\\"')
-            ),
+            onclick="""
+                document.querySelector('[name="query"]').value = "{}";
+                document.querySelector('#search-form button').click();
+            """.format(movie["title"].replace('"', '\\"')),
             cls="search-item",
         )
-        for movie in results[:5]  # Limit to 5 results
+        for movie in results[:3]
     ]
 
     return Div(*movie_items, id="search-results", cls="search-results")
 
 
 @rt("/guess")
-def post(query: str = ""):
+def post(query: str = "", session=None):  # Add session parameter
     if not query:
         return Div("Please select a movie to guess", id="search-results")
 
-    results = fuzzy_search_movies(query)
+    results = fuzzy_search_movies(query=query, limit=3, include_backdrops=False)
     if not results:
         return Div("No movies found", id="search-results")
 
+    current_game = session["game"]  # Get game state from session
     current_movie = current_game["movie"]
     movie = results[0]  # Use the best match
     is_correct = movie["id"] == current_movie["id"]
 
     # Decrease remaining guesses
     current_game["guesses_remaining"] = current_game.get("guesses_remaining", 5) - 1
+    session["game"] = current_game  # Save updated game state back to session
 
     # Update guess counter display
     updated_counter = Div(
@@ -248,6 +302,7 @@ def post(query: str = ""):
         ]
         # Replace the current backdrop with the new one
         current_game["shown_backdrops"] = [next_backdrop]
+        session["game"] = current_game  # Save updated game state back to session
         backdrop_url = f"https://image.tmdb.org/t/p/w1280{next_backdrop}"
         return (
             Div(
@@ -277,10 +332,29 @@ def post(query: str = ""):
 
 
 @rt("/new-game")
-def post():
-    current_game.clear()
-    return get()
+def post(category: str = "popular", session=None):
+    if "game" in session:
+        del session["game"]
+
+    # Get new movie from selected category
+    movie = get_random_movie_with_details(category=category)
+    current_backdrop = movie["backdrops"][0] if movie["backdrops"] else None
+
+    session["game"] = {
+        "movie": movie,
+        "current_backdrop_index": 0,
+        "shown_backdrops": [current_backdrop] if current_backdrop else [],
+        "guesses_remaining": 5,
+        "category": category,  # Store selected category
+    }
+
+    return get(session)
 
 
+# FIXME: Doesn't work since it can't find the `api` module
 # if __name__ == "__main__":
-#     serve()
+#     import uvicorn
+
+#     # serve()
+
+#     uvicorn.run("__main__:app", host="0.0.0.0", port=5002, reload=True, log_config=None)

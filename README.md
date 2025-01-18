@@ -34,7 +34,7 @@ make run-fasthtml
 
 3. Open your browser and navigate to:
 ```
-http://localhost:5001
+http://localhost:5002
 ```
 
 ## Game Rules

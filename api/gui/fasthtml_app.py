@@ -65,7 +65,7 @@ def post(query: str = ""):
     if not query:
         return Div("Start typing to search movies...", id="search-results")
 
-    results = fuzzy_search_movies(query)
+    results = fuzzy_search_movies(query=query, include_backdrops=True)
 
     if not results:
         return Div("No movies found", id="search-results")
