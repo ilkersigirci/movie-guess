@@ -114,8 +114,9 @@ def get(session):
                 name="query",
                 placeholder="Guess the movie...",
                 hx_post="/search",
-                hx_trigger="keyup changed delay:500ms",
+                hx_trigger="input changed delay:200ms",
                 hx_target="#search-results",
+                autocomplete="off",  # To prevent browser autocomplete from interfering
             ),
             Button(
                 "Submit Guess",
@@ -173,34 +174,34 @@ def get(session):
 
     results_div = Div(id="search-results")
 
-    # Add top_nav to the Container
+    # Add top_nav to the Container with reordered elements:
+    # Move search_box and results_div together, before the backdrop
     return Titled(
         "Movie Guess Game",
-        Container(top_nav, backdrop, guess_indicators, search_box, results_div),
+        Container(top_nav, search_box, results_div, guess_indicators, backdrop),
     )
 
 
 @rt("/search")
 def post(query: str = ""):
-    if not query:
+    if not query or len(query) < 2:  # Only search if there are at least 2 characters
         return Div("Start typing to search for movies...", id="search-results")
 
-    results = fuzzy_search_movies(query)
-
+    results = fuzzy_search_movies(query=query, limit=3, include_backdrops=False)
     if not results:
         return Div("No movies found", id="search-results")
 
-    # Create clickable list items that populate the search input
+    # Create clickable list items that populate the search input and automatically submit
     movie_items = [
         Div(
             f"{movie['title']} ({movie['release_date'][:4]})",
-            # Fixed string escaping by using format() instead of f-string
-            onclick='document.querySelector(\'[name="query"]\').value = "{}";'.format(
-                movie["title"].replace('"', '\\"')
-            ),
+            onclick="""
+                document.querySelector('[name="query"]').value = "{}";
+                document.querySelector('#search-form button').click();
+            """.format(movie["title"].replace('"', '\\"')),
             cls="search-item",
         )
-        for movie in results[:5]  # Limit to 5 results
+        for movie in results[:3]
     ]
 
     return Div(*movie_items, id="search-results", cls="search-results")
@@ -211,7 +212,7 @@ def post(query: str = "", session=None):  # Add session parameter
     if not query:
         return Div("Please select a movie to guess", id="search-results")
 
-    results = fuzzy_search_movies(query)
+    results = fuzzy_search_movies(query=query, limit=3, include_backdrops=False)
     if not results:
         return Div("No movies found", id="search-results")
 
@@ -329,5 +330,10 @@ def post(category: str = "popular", session=None):
     return get(session)
 
 
+# FIXME: Doesn't work since it can't find the `api` module
 # if __name__ == "__main__":
-#     serve()
+#     import uvicorn
+
+#     # serve()
+
+#     uvicorn.run("__main__:app", host="0.0.0.0", port=5002, reload=True, log_config=None)

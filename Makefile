@@ -197,7 +197,8 @@ docker-build: ## Build docker image
 	docker build --tag ${DOCKER_IMAGE} --file docker/Dockerfile --target ${DOCKER_TARGET} .
 
 run-fasthtml: ## Run fasthtml app
-	uv run uvicorn api.gui.game_app:app --host 0.0.0.0 --port 5001
+	# uv run --module api/gui/game_app
+	uv run uvicorn api.gui.game_app:app --host 0.0.0.0 --port 5002
 
 run-fasthtml-simple: ## Run simple fasthtml app
 	uv run uvicorn api.gui.simple_app:app --host 0.0.0.0 --port 5002
