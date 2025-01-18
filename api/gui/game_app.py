@@ -22,14 +22,33 @@ app, rt = fast_app(secret_key="your-secret-key-here")  # Add secret key for sess
 
 @rt("/")
 def get(session):
+    # Get current category from session, default to 'popular'
+    current_category = session.get("game", {}).get("category", "popular")
+
     # Add top navigation with category selector and new game button
     top_nav = Div(
         Form(
             Select(
-                Option("Popular Movies", value="popular", selected=True),
-                Option("Top Rated Movies", value="top_rated"),
-                Option("Now Playing", value="now_playing"),
-                Option("Upcoming Movies", value="upcoming"),
+                Option(
+                    "Popular Movies",
+                    value="popular",
+                    selected=current_category == "popular",
+                ),
+                Option(
+                    "Top Rated Movies",
+                    value="top_rated",
+                    selected=current_category == "top_rated",
+                ),
+                Option(
+                    "Now Playing",
+                    value="now_playing",
+                    selected=current_category == "now_playing",
+                ),
+                Option(
+                    "Upcoming Movies",
+                    value="upcoming",
+                    selected=current_category == "upcoming",
+                ),
                 name="category",
                 hx_post="/new-game",
                 hx_target="body",
@@ -178,7 +197,7 @@ def get(session):
     # Move search_box and results_div together, before the backdrop
     return Titled(
         "Movie Guess Game",
-        Container(top_nav, search_box, results_div, guess_indicators, backdrop),
+        Container(top_nav, backdrop, guess_indicators, search_box, results_div),
     )
 
 
