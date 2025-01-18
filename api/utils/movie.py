@@ -152,7 +152,10 @@ def fuzzy_search_movies(
 
 @timing_decorator
 def get_random_movie_with_details(
-    min_backdrops: int = 5, category: str = "popular"
+    min_backdrops: int = 5,
+    category: str = "popular",
+    depth: int = 0,
+    max_depth: int = 5,
 ) -> dict:
     """Get a random movie with at least specified number of backdrops.
 
@@ -160,6 +163,7 @@ def get_random_movie_with_details(
         min_backdrops: Minimum number of backdrops required (default: 5)
         category: The category to select from (default: "popular")
                  Options: "popular", "top_rated", "now_playing", "upcoming"
+        depth: Current recursion depth (default: 0)
 
     Returns:
         A dictionary containing movie details including title, backdrops, etc.
@@ -172,7 +176,11 @@ def get_random_movie_with_details(
         logger.debug(
             f"Movie {movie.title} has {len(backdrops)} backdrops, trying another..."
         )
-        return get_random_movie_with_details(min_backdrops, category)
+        return (
+            get_random_movie_with_details(min_backdrops, category, depth + 1)
+            if depth < max_depth
+            else {"error": "Max recursion depth reached"}
+        )
 
     return {
         "id": movie.id,
