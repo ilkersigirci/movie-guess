@@ -2,6 +2,9 @@
 
 A web-based movie guessing game where players try to identify movies based on their backdrop images. The game progressively reveals more backdrops as players make incorrect guesses.
 
+![Movie Guess Game Home](https://raw.githubusercontent.com/ilkersigirci/movie-guess/main/docs/resources/homepage.png)
+
+
 ## Features
 
 - **Progressive Revelation**: Start with one movie backdrop, with more revealed after incorrect guesses
