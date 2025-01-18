@@ -203,7 +203,9 @@ def get(session):
 
 @rt("/search")
 def post(query: str = ""):
-    if not query or len(query) < 2:  # Only search if there are at least 2 characters
+    MIN_CHARS = 2
+
+    if not query or len(query) < MIN_CHARS:
         return Div("Start typing to search for movies...", id="search-results")
 
     results = fuzzy_search_movies(query=query, limit=3, include_backdrops=False)
