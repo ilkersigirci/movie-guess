@@ -26,6 +26,9 @@ jobs:
           uv sync --frozen --only-group test
 
       - name: Test the Project
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          SESSKEY: 70229eec-76ba-4096-bde8-c4107ff0c25c
         run: |
           make test-all-parallel
 
