@@ -49,17 +49,8 @@ install-no-cache: ## Installs the development version of the package without cac
 	uv sync --frozen --no-cache
 	$(MAKE) install-precommit
 
-install-test: ## Install only test version of the package
-	uv sync --frozen --only-group test
-
 install-precommit: ## Install pre-commit hooks
 	uv run pre-commit install
-
-install-lint:
-	uv pip install ruff==0.8.0
-
-install-doc: ## Install mkdocs, mkdocs-material and mkdocstrings
-	uv pip install mkdocs mkdocs-material mkdocstrings[python]
 
 update-dependencies: ## Updates the lockfiles and installs dependencies. Dependencies are updated if necessary
 	uv sync
@@ -133,14 +124,11 @@ publish: ## Builds the project and publish the package to Pypi
 	uv publish dist/*
 	# uv publish --publish-url https://test.pypi.org/legacy/ --username DUMMY --password DUMMY dist/*
 
-doc: ## Build documentation with mkdocs
-	uv run --module mkdocs build
+doc-build: ## Test whether documentation can be built
+	uv run --module mkdocs build -s
 
-doc-github: ## Build documentation with mkdocs and deploy to github pages
-	uv run --module mkdocs gh-deploy --force
-
-doc-dev: ## Show documentation preview with mkdocs
-	uv run --module mkdocs serve -w ${PACKAGE}
+doc-serve: ## Build and serve the documentation
+	uv run --module mkdocs serve
 
 pre-commit-one: ## Run pre-commit with specific files
 	uv lock --locked
